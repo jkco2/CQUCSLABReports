@@ -1,0 +1,39 @@
+%!TEX program = xelatex
+\documentclass[cn,normal,black,11pt]{elegantnote}
+\usepackage[T1]{fontenc}
+\usepackage{wasysym}
+\usepackage{multirow}
+
+\begin{document}
+\newcommand{\stunameone}{}
+\newcommand{\stunametwo}{}
+\newcommand{\stunamethree}{}
+\newcommand{\stuclass}{2017级计算机科学与技术（卓越）01班}
+\newcommand{\expname}{实验一 简单流水线与运算器实验}
+\newcommand{\expdate}{2025 年 4 月 13 日}
+\newcommand{\reportdate}{\number\year 年 \number\month 月 \number\day 日}
+\newcommand{\exproom}{DS1410}
+\newcommand{\stugrade}{优秀/良好/中等}
+\newcommand{\teacher}{任骜}
+% \newcommand{}{}
+% \maketitle
+% logo
+% \centerline{\includegraphics[width=0.25\textwidth]{logo.pdf}}
+
+\setlist[itemize]{label=$\circ$}
+
+\input{sections/0_score_info.tex}
+
+\newpage
+
+\include{sections/1_experiment_content.tex}
+
+\include{sections/2_experiment_design.tex}
+
+\include{sections/3_experiment_note.tex}
+
+\include{sections/4_experiment_result.tex}
+
+\include{sections/5_code_appendix.tex}
+
+\end{document}

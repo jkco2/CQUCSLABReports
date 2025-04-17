@@ -1,0 +1,37 @@
+\appendix
+\section{ALU代码}
+
+\begin{lstlisting}[language=Verilog]
+    `timescale 1ns / 1ps
+
+    module alu(
+        input wire [2:0] op,            // 操作码
+        input wire [7:0] num1,          // 8位输入
+        input wire [31:0] num2,         // 32位输入
+        output reg [31:0] result        // 运算结果
+    );
+    
+        wire [31:0] num1_ext;
+        assign num1_ext = {24'b0, num1};  // 8位零扩展到32位
+    
+        always @(*) begin
+            case (op)
+                3'b000: result = num1_ext + num2;
+                3'b001: result = num1_ext - num2;
+                3'b010: result = num1_ext & num2;
+                3'b011: result = num1_ext | num2;
+                3'b100: result = ~num1_ext;
+                3'b101: result = (num1_ext < num2) ? 32'b1 : 32'b0;
+                default: result = 32'hxxxxxxxx;
+            endcase
+        end
+    endmodule
+    
+\end{lstlisting}
+
+\section{32bit流水线全加器代码}
+\textcolor{red}{仅需要stallable\_pipeline\_adder.v，填充至lstlisting中(红字为内容说明，请删除)}
+\begin{lstlisting}[language=Verilog]
+
+\end{lstlisting}
+
