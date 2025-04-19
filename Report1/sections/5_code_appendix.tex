@@ -30,8 +30,175 @@
 \end{lstlisting}
 
 \section{32bit流水线全加器代码}
-\textcolor{red}{仅需要stallable\_pipeline\_adder.v，填充至lstlisting中(红字为内容说明，请删除)}
 \begin{lstlisting}[language=Verilog]
+
+    module adder(
+        input clk,reset,
+        input [3:0]refresh,
+        input [3:0]stop,
+        input cin,         //初始进位
+        input validin,     //初始值有效
+        input out_allow,    //允许输出
+        input [31:0] num1,
+        input [31:0] num2,
+        
+        output validout,
+        output [31:0] ans,
+        output cout,
+        
+        output debug_cout1,
+        output debug_cout2,
+        output debug_cout3,
+        output debug_cout4,
+        
+        
+        output [7:0] debug_sum1,
+        output [15:0] debug_sum2,
+        output [23:0] debug_sum3,
+        output [31:0] debug_sum4,
+        output pipe1_valid_out,
+        output pipe2_valid_out,
+        output pipe3_valid_out,
+        output pipe4_valid_out
+        
+            );
+        
+        
+        reg [7:0] temp_sum1;
+        reg pipe1_valid;
+        reg [15:0] temp_sum2;
+        reg pipe2_valid;
+        reg [23:0] temp_sum3;
+        reg pipe3_valid;
+        reg [31:0] temp_sum4;
+        reg pipe4_valid;
+        
+        reg cout1,cout2,cout3,cout4;
+        
+        reg [23:0] temp_a_1,temp_b_1;      //1,2 stage
+        reg [15:0] temp_a_2,temp_b_2;     //2,3 stage
+        reg [7:0] temp_a_3,temp_b_3;     //3,4 stage
+        
+        //pipe1_stage
+        
+        wire pipe1_allowin;
+        wire pipe1_ready;
+        wire pipe1_to_pipe2_valid;
+        
+        assign pipe1_ready=!stop[0];
+        assign pipe1_allowin=! pipe1_valid || pipe1_ready && pipe2_allowin;
+        assign pipe1_to_pipe2_valid=pipe1_valid && pipe1_ready;
+        
+        always @(posedge clk ) begin
+            if (reset) begin
+                pipe1_valid<=1'b0;
+            end
+            else if(refresh[0]) begin
+                pipe1_valid<=1'b0;
+            end
+            else if(pipe1_allowin) begin
+                pipe1_valid<=validin;
+            end
+            if(pipe1_allowin&&validin) begin
+                {cout1,temp_sum1} <={1'b0,num1[7:0]}+{1'b0,num2[7:0]}+cin;
+                temp_a_1<=num1[31:8];
+                temp_b_1<=num2[31:8];
+            end
+        end
+        
+        //pipe2_stage
+        
+        wire pipe2_allowin;
+        wire pipe2_ready;
+        wire pipe2_to_pipe3_valid;
+        
+        assign pipe2_ready=!stop[1];
+        assign pipe2_allowin=! pipe2_valid || pipe2_ready && pipe3_allowin;
+        assign pipe2_to_pipe3_valid=pipe2_valid && pipe2_ready;
+        
+        
+        always @(posedge clk) begin
+            if (reset) begin
+                pipe2_valid<=1'b0;
+            end
+            else if(refresh[1]) begin
+                pipe2_valid<=1'b0;
+            end
+            else if(pipe2_allowin) begin
+                pipe2_valid<=pipe1_to_pipe2_valid;
+            end
+            if(pipe2_allowin&&pipe1_to_pipe2_valid) begin
+            {cout2,temp_sum2}<={cout1+{1'b0,temp_a_1[7:0]}+{1'b0,temp_b_1[7:0]},temp_sum1};
+            temp_a_2<=temp_a_1[23:8];
+            temp_b_2<=temp_b_1[23:8];
+            end
+        end
+        
+        //pipe3_stage
+        
+        wire pipe3_allowin;
+        wire pipe3_ready;
+        wire pipe3_to_pipe4_valid;
+        
+        assign pipe3_ready=!stop[2];
+        assign pipe3_allowin=! pipe3_valid || pipe3_ready && pipe4_allowin;
+        assign pipe3_to_pipe4_valid=pipe3_valid && pipe3_ready;
+        
+        always @(posedge clk) begin
+            if (reset) begin
+                pipe3_valid<=1'b0;
+            end
+            else if(refresh[2]) begin
+                pipe3_valid<=1'b0;
+            end
+            else if(pipe3_allowin) begin
+                pipe3_valid<=pipe2_to_pipe3_valid;
+            end
+            if(pipe3_allowin&&pipe2_to_pipe3_valid) begin
+            {cout3,temp_sum3}<={cout2+{1'b0,temp_a_2[7:0]}+{1'b0,temp_b_2[7:0]},temp_sum2};
+            temp_a_3<=temp_a_2[15:8];
+            temp_b_3<=temp_b_2[15:8];
+            end
+        end
+        
+        //pipe4_stage
+        
+        wire pipe4_allowin;
+        wire pipe4_ready;
+        
+        assign pipe4_ready=!stop[3];
+        assign pipe4_allowin=! pipe4_valid || pipe4_ready && out_allow;
+        
+        always @(posedge clk) begin
+            if (reset) begin
+                pipe4_valid<=1'b0;
+            end
+            else if(refresh[3]) begin
+                pipe4_valid<=1'b0;
+            end
+            else if(pipe4_allowin) begin
+                pipe4_valid<=pipe3_to_pipe4_valid;
+            end
+            if(pipe4_allowin&&pipe3_to_pipe4_valid) begin
+            {cout4,temp_sum4}<={cout3+{1'b0,temp_a_3}+{1'b0,temp_b_3},temp_sum3};
+            end
+        end
+        
+        assign debug_sum1 = temp_sum1;
+        assign debug_sum2 = temp_sum2;
+        assign debug_sum3 = temp_sum3;
+        assign debug_sum4 = temp_sum4;
+        
+        assign pipe1_valid_out = pipe1_valid;
+        assign pipe2_valid_out = pipe2_valid;
+        assign pipe3_valid_out = pipe3_valid;
+        assign pipe4_valid_out = pipe4_valid;
+        
+        
+        assign validout=pipe4_ready&&pipe4_valid;
+        assign ans=temp_sum4;
+        assign cout=cout4;
+        endmodule
 
 \end{lstlisting}
 

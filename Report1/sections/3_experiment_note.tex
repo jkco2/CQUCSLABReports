@@ -14,3 +14,59 @@
 
 \textbf{解决方案：}编写 Testbench 仿真文件，采用 initial 块在每个时钟上升沿提供输入数据，包括 8 位 num1、32 位 num2
  和 3 位操作码 op，通过 \$display 打印输出结果，在控制台查看各功能的执行情况并与预期对比验证正确性。
+
+\subsection{问题4:流水线加法器仿真图难以Debug}
+\textbf{问题描述：}
+\begin{lstlisting}[language=Verilog]
+    module adder(
+        input clk,reset,
+        input [3:0]refresh,
+        input [3:0]stop,
+        input cin,         //初始进位
+        input validin,     //初始值有效
+        input out_allow,    //允许输出
+        input [31:0] num1,
+        input [31:0] num2,
+        
+        output validout,
+        output [31:0] ans,
+        output cout,
+            );
+\end{lstlisting}
+只使用上方代码中的接口难以看清流水线加法器内部结构，难以Debug并且难以判断功能是否正常。
+\textbf{解决方案：}在上方代码中添加如下代码，添加了流水线加法器内部结构，便于Debug。
+\begin{lstlisting}[language=Verilog]
+    module adder(
+        input clk,reset,
+        input [3:0]refresh,
+        input [3:0]stop,
+        input cin,         //初始进位
+        input validin,     //初始值有效
+        input out_allow,    //允许输出
+        input [31:0] num1,
+        input [31:0] num2,
+
+        output validout,
+        output [31:0] ans,
+        output cout,
+
+        output debug_cout1,
+        output debug_cout2,
+        output debug_cout3,
+        output debug_cout4,
+
+        output [7:0] debug_sum1,
+        output [15:0] debug_sum2,
+        output [23:0] debug_sum3,
+        output [31:0] debug_sum4,
+        output pipe1_valid_out,
+        output pipe2_valid_out,
+        output pipe3_valid_out,
+        output pipe4_valid_out
+            );
+\end{lstlisting}
+
+\subsection{问题5:仿真结果不正确}
+\textbf{问题描述：}由仿真结果观察，仿真结果不正确。无法做到暂停功能并且 ans 没有正确结果。
+
+\textbf{解决方案：}仔细观察代码后发现，将部分变量的变量名写错，导致仿真结果不正确。将变量名改正后，仿真结果正确。
