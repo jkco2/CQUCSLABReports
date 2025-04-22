@@ -4,28 +4,59 @@
 \begin{lstlisting}[language=Verilog]
     `timescale 1ns / 1ps
 
-    module alu(
-        input wire [2:0] op,            // 操作码
-        input wire [7:0] num1,          // 8位输入
-        input wire [31:0] num2,         // 32位输入
-        output reg [31:0] result        // 运算结果
+    module ALU_top(
+    input clk,
+    input reset,
+    input [2:0] op,
+    input [7:0] num1,
+    output [6:0] seg,
+    output [7:0] ans
     );
     
-        wire [31:0] num1_ext;
-        assign num1_ext = {24'b0, num1};  // 8位零扩展到32位
-    
-        always @(*) begin
-            case (op)
-                3'b000: result = num1_ext + num2;
-                3'b001: result = num1_ext - num2;
-                3'b010: result = num1_ext & num2;
-                3'b011: result = num1_ext | num2;
-                3'b100: result = ~num1_ext;
-                3'b101: result = (num1_ext < num2) ? 32'b1 : 32'b0;
-                default: result = 32'hxxxxxxxx;
-            endcase
-        end
-    endmodule
+wire [31:0] num2 = 32'b01;
+wire [31:0] alu_result;
+
+ALU ALU(
+    .num1(num1),
+    .num2(num2),
+    .op(op),
+    .ans(alu_result)
+);
+
+display display(
+    .clk(clk),
+    .reset(reset),
+    .s(alu_result),
+    .seg(seg),
+    .ans(ans)
+);
+endmodule
+
+module ALU(
+    input [7:0] num1,
+    input [31:0] num2,
+    input [2:0] op,
+    output reg [31:0] ans
+    );
+
+always  @ (*) 
+begin
+    case(op)
+        3'b000: ans = num1 + num2;
+        3'b001: ans = num1 - num2;
+        3'b010: ans = num1 & num2;
+        3'b011: ans = num1 | num2;
+        3'b100: ans = ~num1;
+        3'b101: ans = (num1 < num2) ? 32'b1 : 32'b0;
+        3'b110: ans = 32'b0;
+        3'b111: ans = 32'b0;
+        default : ans = 32'hX;
+    endcase
+end
+
+endmodule
+
+
     
 \end{lstlisting}
 
