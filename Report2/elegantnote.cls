@@ -57,7 +57,7 @@
   \AtEndOfClass{\RequirePackage{microtype}}
 \fi
 
-\RequirePackage{newtxtext}
+%\RequirePackage{newtxtext}
 \RequirePackage{newtxmath}
 
 \RequirePackage{listings} 

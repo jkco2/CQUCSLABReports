@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.3.14)  26 APR 2025 21:28
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.3.14)  26 APR 2025 21:32
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -907,57 +907,53 @@ Package: multirow 2024/11/12 v2.9 Span multiple rows of a table
 \multirow@cntb=\count379
 \multirow@dima=\skip87
 \bigstrutjot=\dimen332
-) (./experiment_report.aux (./sections/1_experiment_content.aux) (./sections/2_experiment_design.aux) (./sections/3_experiment_note.aux) (./sections/4_experiment_result.aux
-
-LaTeX Warning: Label `fig:my_label' multiply defined.
-
-) (./sections/5_code_appendix.aux))
+) (./experiment_report.aux)
 \openout1 = `experiment_report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/ntxmi/m/it on input line 7.
-LaTeX Font Info:    Trying to load font information for OML+ntxmi on input line 7.
+LaTeX Font Info:    Checking defaults for OML/ntxmi/m/it on input line 14.
+LaTeX Font Info:    Trying to load font information for OML+ntxmi on input line 14.
  (c:/texlive/2025/texmf-dist/tex/latex/newtx/omlntxmi.fd
 File: omlntxmi.fd 2015/08/25 Fontinst v1.933 font definitions for OML/ntxmi.
 )
-LaTeX Font Info:    ... okay on input line 7.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 7.
-LaTeX Font Info:    ... okay on input line 7.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 7.
-LaTeX Font Info:    ... okay on input line 7.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 7.
-LaTeX Font Info:    ... okay on input line 7.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 7.
-LaTeX Font Info:    ... okay on input line 7.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 7.
-LaTeX Font Info:    ... okay on input line 7.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 7.
-LaTeX Font Info:    ... okay on input line 7.
-LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 7.
-LaTeX Font Info:    Trying to load font information for U+ntxexa on input line 7.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 14.
+LaTeX Font Info:    Trying to load font information for U+ntxexa on input line 14.
  (c:/texlive/2025/texmf-dist/tex/latex/newtx/untxexa.fd
 File: untxexa.fd 2012/04/16 Fontinst v1.933 font definitions for U/ntxexa.
 )
-LaTeX Font Info:    ... okay on input line 7.
-LaTeX Font Info:    Checking defaults for LMS/ntxsy/m/n on input line 7.
-LaTeX Font Info:    Trying to load font information for LMS+ntxsy on input line 7.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for LMS/ntxsy/m/n on input line 14.
+LaTeX Font Info:    Trying to load font information for LMS+ntxsy on input line 14.
  (c:/texlive/2025/texmf-dist/tex/latex/newtx/lmsntxsy.fd
 File: lmsntxsy.fd 2016/07/02 Fontinst v1.933 font definitions for LMS/ntxsy.
 )
-LaTeX Font Info:    ... okay on input line 7.
-LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 7.
-LaTeX Font Info:    Trying to load font information for LMX+ntxexx on input line 7.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 14.
+LaTeX Font Info:    Trying to load font information for LMX+ntxexx on input line 14.
  (c:/texlive/2025/texmf-dist/tex/latex/newtx/lmxntxexx.fd
 File: lmxntxexx.fd 2016/07/03 Fontinst v1.933 font definitions for LMX/ntxexx.
 )
-LaTeX Font Info:    ... okay on input line 7.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 7.
-LaTeX Font Info:    ... okay on input line 7.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 7.
-LaTeX Font Info:    ... okay on input line 7.
-LaTeX Info: Command `\dddot' is already robust on input line 7.
-LaTeX Info: Command `\ddddot' is already robust on input line 7.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Info: Command `\dddot' is already robust on input line 14.
+LaTeX Info: Command `\ddddot' is already robust on input line 14.
 \c@lstlisting=\count380
-Package hyperref Info: Link coloring ON on input line 7.
+Package hyperref Info: Link coloring ON on input line 14.
  (./experiment_report.out) (./experiment_report.out)
 \@outlinefile=\write4
 \openout4 = `experiment_report.out'.
@@ -1065,19 +1061,15 @@ File: uwasy.fd 2020/01/19 v2.4 Wasy-2 symbol font definitions
 
 [1
 
-]
-\openout2 = `sections/1_experiment_content.aux'.
+] (./sections/1_experiment_content.tex) (./sections/2_experiment_design.tex) (./sections/3_experiment_note.tex) (./sections/4_experiment_result.tex
 
- (./sections/1_experiment_content.tex)
-
-[2
-
-]
-\openout2 = `sections/2_experiment_design.aux'.
-
- (./sections/2_experiment_design.tex
-File: image/yingjian.png Graphic file (type bmp)
-<image/yingjian.png>
+[2]) (./sections/5_code_appendix.tex (c:/texlive/2025/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2024/09/23 1.10c listings language file
+) (c:/texlive/2025/texmf-dist/tex/latex/listings/lstlang2.sty
+File: lstlang2.sty 2024/09/23 1.10c listings language file
+) (c:/texlive/2025/texmf-dist/tex/latex/listings/lstlang3.sty
+File: lstlang3.sty 2024/09/23 1.10c listings language file
+)
 
 Package fontspec Info: 
 (fontspec)             Could not resolve font "FangSong/BI" (it probably
@@ -1104,85 +1096,23 @@ Package fontspec Info:
 (fontspec)             - 'normal' (m/n) with NFSS spec.:
 (fontspec)             <->"FangSong/OT:script=hani;language=dflt;"
 
-
-
-[3
-
-
-
-])
-
-[4]
-
-[5]
-\openout2 = `sections/3_experiment_note.aux'.
-
- (./sections/3_experiment_note.tex (c:/texlive/2025/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2024/09/23 1.10c listings language file
-) (c:/texlive/2025/texmf-dist/tex/latex/listings/lstlang2.sty
-File: lstlang2.sty 2024/09/23 1.10c listings language file
-) (c:/texlive/2025/texmf-dist/tex/latex/listings/lstlang3.sty
-File: lstlang3.sty 2024/09/23 1.10c listings language file
 )
 
-[6
-
-
-
-])
-
-[7]
-\openout2 = `sections/4_experiment_result.aux'.
-
- (./sections/4_experiment_result.tex
-File: image/177.png Graphic file (type bmp)
-<image/177.png>
-File: image/33.png Graphic file (type bmp)
-<image/33.png>
-)
-
-[8
-
-
-
-]
-
-[9]
-\openout2 = `sections/5_code_appendix.aux'.
-
- (./sections/5_code_appendix.tex
-
-[10
-
-
-
-]
-
-[11]
-
-[12]
-
-[13])
-
-[14] (./experiment_report.aux (./sections/1_experiment_content.aux) (./sections/2_experiment_design.aux) (./sections/3_experiment_note.aux) (./sections/4_experiment_result.aux) (./sections/5_code_appendix.aux))
+[3] (./experiment_report.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2020/03/25>
  ***********
-
-
-LaTeX Warning: There were multiply-defined labels.
-
 Package rerunfilecheck Info: File `experiment_report.out' has not changed.
-(rerunfilecheck)             Checksum: 5E8FBB792F5A8FD5EF2621047E0EE4DA;2920.
+(rerunfilecheck)             Checksum: B6EE24564F40C083D3B26965D45AC9CF;727.
  ) 
 Here is how much of TeX's memory you used:
- 33341 strings out of 473832
- 672385 string characters out of 5733158
- 1382334 words of memory out of 5000000
- 55778 multiletter control sequences out of 15000+600000
- 621103 words of font info for 111 fonts, out of 8000000 for 9000
+ 32852 strings out of 473832
+ 660283 string characters out of 5733158
+ 1268334 words of memory out of 5000000
+ 55317 multiletter control sequences out of 15000+600000
+ 612561 words of font info for 108 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 108i,12n,136p,550b,1947s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 108i,12n,136p,550b,1343s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on experiment_report.pdf (14 pages).
+Output written on experiment_report.pdf (3 pages).
