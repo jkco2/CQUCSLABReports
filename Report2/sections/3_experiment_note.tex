@@ -15,3 +15,12 @@ nct 字段（仅对 R-type有效），确定 ALU 执行
 类型时直接输出加法控制码，当为 Branch 类型时直接输出减法控制码；当为 
 R-type 类型时根据 funct 字段进一步精确匹配 ALU 操作（如加、减、与、或、SLT），并输出
 对应的 alucontrol 编码。若遇非法或未知 funct，输出默认非法操作码（如 3'bxxx 或其他处理）。
+\subsection{问题3:指令间被插入0}
+\textbf{问题描述：}指令间被插入0
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{image/pr.png}
+    \caption{指令间被插入0}
+    \label{fig:my_label}
+\end{figure}
+\textbf{解决方案：}重新创建项目，问题解决。
