@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.3.14)  27 APR 2025 20:23
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.3.14)  27 APR 2025 21:33
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1072,6 +1072,21 @@ File: uwasy.fd 2020/01/19 v2.4 Wasy-2 symbol font definitions
 ] (./sections/1_experiment_content.tex) (./sections/2_experiment_design.tex
 Missing character: There is no ​ ("200B) in font ec-lmr10!
 Missing character: There is no ​ ("200B) in font ec-lmr10!
+
+Underfull \hbox (badness 1168) in paragraph at lines 22--23
+\TU/SimSun(0)/m/n/10.95 示，|  用 于 根 据 指 令 大 类 快 速 确 定
+ []
+
+
+Underfull \hbox (badness 3138) in paragraph at lines 33--34
+[]\TU/SimSun(0)/m/n/10.95 在 \T1/lmr/m/n/10.95 R-type \TU/SimSun(0)/m/n/10.95 指 令 中 用 于 具 体 指 定
+ []
+
+
+Underfull \hbox (badness 1168) in paragraph at lines 34--35
+\TU/SimSun(0)/m/n/10.95 示，|  用 于 根 据 指 令 大 类 快 速 确 定
+ []
+
 
 
 [2]

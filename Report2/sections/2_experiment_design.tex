@@ -10,15 +10,16 @@
 	\begin{tabular}{|l|l|l|p{6cm}|}
 	\hline
 	\textbf{信号名} & \textbf{方向} & \textbf{位宽} & \textbf{功能描述}\\ \hline \hline
-	Inst\_part\_31\_26			& Output& 6-bit & \\ 
-	jump			& Input& 1-bit & \\ 
-	branch			& Output& 1-bit & \\ 
-	alusrc			& Output& 1-bit & \\ 
-	memwrite			& Output& 1-bit & \\ 
-	memtoreg			& Output& 1-bit & \\ 
-	regwrite			& Output& 1-bit & \\ 
-	regdst			& Output& 1-bit & \\ 
-	ALop			& Output& 2-bit & \\ 
+	Inst\_part\_31\_26			& Output& 6-bit & op字段\\ 
+	jump			& Input& 1-bit & 跳转\\ 
+	branch			& Output& 1-bit & 是否为branch指令且满足branch的条
+件\\ 
+	alusrc			& Output& 1-bit & 控制 ALU 第二操作数的来源。\\ 
+	memwrite			& Output& 1-bit & 控制是否要写入数据存储器\\ 
+	memtoreg			& Output& 1-bit & 控制是否要写入寄存器堆\\ 
+	regwrite			& Output& 1-bit & 指示寄存器堆是否能写入\\ 
+	regdst			& Output& 1-bit & 决定写回寄存器的目标号来源\\ 
+	ALop			& Output& 2-bit & 提供给 ALU 控制器的运算类型提示，用于根据指令大类快速确定 ALU 应执行的基本操作\\ 
 	\hline
 	\end{tabular}
 \end{center}
@@ -29,9 +30,9 @@
 	\begin{tabular}{|l|l|l|p{6cm}|}
 	\hline
 	\textbf{信号名} & \textbf{方向} & \textbf{位宽} & \textbf{功能描述}\\ \hline \hline
-	func			& Input& 6-bit & \\ 
-	aluop			& Input& 2-bit & \\ 
-	alucontrol			& Output& 3-bit & \\ 
+	func			& Input& 6-bit & 在 R-type 指令中用于具体指定 ALU 要执行的运算功能\\ 
+	Alop			& Input& 2-bit & 提供给 ALU 控制器的运算类型提示，用于根据指令大类快速确定 ALU 应执行的基本操作\\ 
+	Alcontrol			& Output& 3-bit & 由 ALU译码器输出的控制信号，精确指示 ALU 执行哪种具体运算\\ 
 	\hline
 	\end{tabular}
 \end{center}
