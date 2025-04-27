@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.3.14)  27 APR 2025 23:08
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.3.14)  27 APR 2025 23:15
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -918,6 +918,9 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 
 LaTeX Warning: Label `fig:my_label' multiply defined.
 
+
+LaTeX Warning: Label `fig:my_label' multiply defined.
+
 )
 \openout1 = `experiment_report.aux'.
 
@@ -1133,14 +1136,19 @@ File: image/pic3.png Graphic file (type bmp)
 
 [4]) (./sections/3_experiment_note.tex
 
-[5]) (./sections/4_experiment_result.tex
+[5]
+File: image/pr.png Graphic file (type bmp)
+<image/pr.png>
+
+
+[6]) (./sections/4_experiment_result.tex
 File: image/15.png Graphic file (type bmp)
 <image/15.png>
 File: image/dw.png Graphic file (type bmp)
 <image/dw.png>
 
 
-[6]) (./sections/5_code_appendix.tex (c:/texlive/2025/texmf-dist/tex/latex/listings/lstlang1.sty
+[7]) (./sections/5_code_appendix.tex (c:/texlive/2025/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2024/09/23 1.10c listings language file
 ) (c:/texlive/2025/texmf-dist/tex/latex/listings/lstlang2.sty
 File: lstlang2.sty 2024/09/23 1.10c listings language file
@@ -1148,13 +1156,13 @@ File: lstlang2.sty 2024/09/23 1.10c listings language file
 File: lstlang3.sty 2024/09/23 1.10c listings language file
 )
 
-[7]
-
 [8]
 
-[9])
+[9]
 
-[10] (./experiment_report.aux)
+[10])
+
+[11] (./experiment_report.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2020/03/25>
@@ -1163,22 +1171,16 @@ L3 programming layer <2020/03/25>
 
 LaTeX Warning: There were multiply-defined labels.
 
-
-Package rerunfilecheck Warning: File `experiment_report.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `experiment_report.out':
-(rerunfilecheck)             Before: 8BF75B911DE5E2BCB5676782DA2CE51A;2493
-(rerunfilecheck)             After:  8D00E12AEE09163718E2925BE89E7755;2135.
+Package rerunfilecheck Info: File `experiment_report.out' has not changed.
+(rerunfilecheck)             Checksum: 1A2306B134042C3013F48DF148BEBEC9;2272.
  ) 
 Here is how much of TeX's memory you used:
- 33281 strings out of 473832
- 669172 string characters out of 5733158
+ 33290 strings out of 473832
+ 669322 string characters out of 5733158
  1365334 words of memory out of 5000000
- 55733 multiletter control sequences out of 15000+600000
+ 55741 multiletter control sequences out of 15000+600000
  616832 words of font info for 110 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  108i,12n,136p,550b,1947s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on experiment_report.pdf (10 pages).
+Output written on experiment_report.pdf (11 pages).
