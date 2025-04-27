@@ -1,6 +1,142 @@
 \appendix
 \section{Controller代码}
-\textcolor{red}{仅需要根据需要，在一个模块完成控制器的，直接填写，多个模块（maindec、aludec）分别加入新的lstlisting并填写(红字为内容说明，请删除)}
+\subsection{controller}
 \begin{lstlisting}[language=Verilog]
+    `timescale 1ns / 1ps
+    module controller(
+    input [5:0] Inst_part_31_26,
+    input [5:0] Inst_part_5_0,
+    output wire jump,branch,alusrc,memwrite,memtoreg,regwrite,regdst,
+    output wire [2:0]Alcontrol
+        );
+    
+    
+    wire [1:0]Alop;
+    
+    maindec MD(
+    .Inst_part_31_26(Inst_part_31_26),
+    .jump(jump),
+    .branch(branch),
+    .alusrc(alusrc),
+    .memwrite(memwrite),
+    .memtoreg(memtoreg),
+    .regwrite(regwrite),
+    .regdst(regdst),
+    .Alop(Alop)
+    );
+    
+    aludec AL(
+    .Inst_part_5_0(Inst_part_5_0),
+    .Alop(Alop),
+    .Alcontrol(Alcontrol)
+    );
+    
+    endmodule
+\end{lstlisting}
+\subsection{maindec}
+\begin{lstlisting}[language=Verilog]
+    `timescale 1ns / 1ps
+    module maindec(
+    input [5:0]Inst_part_31_26,
+    output wire jump,branch,alusrc,memwrite,memtoreg,regwrite,regdst,
+    output wire [1:0]Alop
+        );
+    
+    reg [1:0] Alop_reg;
+    reg [6:0] Signs;
+    assign {regwrite,regdst,alusrc,branch,memwrite,memtoreg,jump}=Signs;
+    assign Alop=Alop_reg;
+    
+    always @(*) begin
+        case (Inst_part_31_26)
+            6'b000000 : begin       //R-type
+                Signs<=7'b1100000;
+                Alop_reg<=2'b10;
+            end
+            6'b100011 : begin       //lw
+                Signs<=7'b1010010;
+                Alop_reg<=2'b00;
+            end
+            6'b101011 : begin       //sw
+                Signs<=7'b0x101x0;
+                Alop_reg<=2'b00;
+            end
+            6'b000100 : begin       //beq
+                Signs<=7'b0x010x0;
+                Alop_reg<=2'b01;
+            end
+            6'b001000 : begin       //addi
+                Signs<=7'b1010000;
+                Alop_reg<=2'b00;
+            end
+            6'b000010 : begin       //jump
+                Signs<=7'b0xxx0x1;
+                Alop_reg<=2'bxx;
+            end
+            default : begin
+                Signs<=7'b0000000;
+                Alop_reg<=2'b00;
+            end
+        endcase
+    end
+    
+    endmodule
+    
+\end{lstlisting}
 
+\subsection{aludec}
+\begin{lstlisting}[language=Verilog]
+    `timescale 1ns / 1ps
+    module aludec(
+    input wire [5:0]Inst_part_5_0,
+    input wire [1:0]Alop,
+    output wire [2:0]Alcontrol
+        );
+    
+    assign Alcontrol=(Alop==2'b00)?(3'b010):      //lw or sw
+                     (Alop==2'b01)?(3'b110):      //beq
+                     (Alop==2'b10)?(
+                     (Inst_part_5_0==6'b100000)?(3'b010): //R-type
+                     (Inst_part_5_0==6'b100010)?(3'b110):
+                     (Inst_part_5_0==6'b100100)?(3'b000):
+                     (Inst_part_5_0==6'b100101)?(3'b001):
+                     (Inst_part_5_0==6'b101010)?(3'b111):(3'bxxx)
+                     ):(3'bxxx);
+    
+    endmodule
+\end{lstlisting}
+
+\section{PC代码}
+\begin{lstlisting}[language=Verilog]
+    `timescale 1ns / 1ps
+    module pc(
+    input clk,
+    input rst,
+    output wire [31:0]pc,
+    output wire inst_ce
+        );
+    
+    reg [31:0]PC;
+    reg Inst;
+    
+    always @(posedge clk) begin
+        if(rst) begin
+            PC<=32'b0;
+            Inst<=1'b0;
+        end
+        else begin
+            Inst<=1'b1;
+            if (PC>=32'hffffff) begin
+                PC<=0;
+            end
+            else begin
+                PC<=pc+4'b0100;
+            end
+        end
+    end
+    
+    assign inst_ce=Inst;
+    assign pc=PC;
+    
+    endmodule    
 \end{lstlisting}
