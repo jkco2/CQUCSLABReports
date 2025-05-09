@@ -110,33 +110,33 @@
 \begin{lstlisting}[language=Verilog]
     `timescale 1ns / 1ps
     module pc(
-    input clk,
-    input rst,
-    output wire [31:0]pc,
-    output wire inst_ce
-        );
-    
-    reg [31:0]PC;
-    reg Inst;
-    
-    always @(posedge clk) begin
-        if(rst) begin
-            PC<=32'b0;
-            Inst<=1'b0;
-        end
-        else begin
-            Inst<=1'b1;
-            if (PC>=32'hffffff) begin
-                PC<=0;
-            end
-            else begin
-                PC<=pc+4'b0100;
-            end
-        end
+input clk,
+input rst,
+input [31:0]next_pc,
+output wire [31:0]pc
+);
+
+reg [31:0]pc_reg;
+
+always @(posedge clk) begin
+    if(rst) begin
+        pc_reg<=32'b0;
     end
+    else begin
+        pc_reg<=next_pc;
+    end
+end
+assign pc=pc_reg;
+endmodule
     
-    assign inst_ce=Inst;
-    assign pc=PC;
+    endmodule
     
-    endmodule    
+//written in top:
+    assign next_pc = pc+4'b0100;
+    pc P(
+    .clk(clk),
+    .rst(reset),
+    .next_pc(next_pc),
+    .pc(pc)
+    );
 \end{lstlisting}
