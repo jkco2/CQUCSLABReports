@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.3.14)  9 MAY 2025 19:50
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.3.14)  10 MAY 2025 00:13
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1073,14 +1073,14 @@ File: uwasy.fd 2020/01/19 v2.4 Wasy-2 symbol font definitions
 
 [2])
 
-[3] (./sections/3_experiment_note.tex) (./sections/4_experiment_result.tex
+[3] (./sections/3_experiment_note.tex
+
+[4]) (./sections/4_experiment_result.tex
 File: image/sim.png Graphic file (type bmp)
 <image/sim.png>
 File: image/simsuccess.png Graphic file (type bmp)
 <image/simsuccess.png>
-
-
-[4])
+)
 
 [5] (./sections/5_code_appendix.tex
 
@@ -1129,15 +1129,15 @@ LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2020/03/25>
  ***********
 Package rerunfilecheck Info: File `experiment_report.out' has not changed.
-(rerunfilecheck)             Checksum: 63B6DD277835E6682010DA1D0AB06851;1034.
+(rerunfilecheck)             Checksum: 21593B6BEF38050841EAB0125E6E6803;1422.
  ) 
 Here is how much of TeX's memory you used:
- 33152 strings out of 473832
- 664993 string characters out of 5733158
- 1488334 words of memory out of 5000000
- 55609 multiletter control sequences out of 15000+600000
+ 33153 strings out of 473832
+ 665004 string characters out of 5733158
+ 1482332 words of memory out of 5000000
+ 55610 multiletter control sequences out of 15000+600000
  612569 words of font info for 109 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 108i,12n,136p,550b,2174s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 108i,12n,136p,550b,2176s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 Output written on experiment_report.pdf (9 pages).
