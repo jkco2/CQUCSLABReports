@@ -1,6 +1,134 @@
 \appendix
+\newpage
 \section{Datapath代码}
-\textcolor{red}{其他模块不需要填写(红字为内容说明，请删除)}
 \begin{lstlisting}[language=Verilog]
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 2025/05/06 19:46:00
+// Design Name: 
+// Module Name: datapath
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
 
+module datapath(
+    input wire clka,           // 时钟
+    input wire rst,            // 复位信号
+    input wire jump,           // 跳转控制
+    input wire branch,         // 分支控制
+    input wire alusrc,         // ALU源选择
+    input wire memtoreg,       // 数据选择：内存到寄存器
+    input wire regwrite,       // 寄存器写控制
+    input wire regdst,         // 寄存器目的选择
+    input wire [2:0] alucontrol, // ALU控制信号
+    output wire [31:0] aluout, // ALU结果
+    output wire [31:0] pc,     // 当前PC地址
+    output wire [31:0] writedata, // 写入数据
+    input wire [31:0] instr,   // 指令
+    input wire [31:0] readdata // 数据存储器读出数据
+);
+
+    wire [31:0] readdata1;     // 寄存器读数据1
+    wire [31:0] readdata2;     // 寄存器读数据2
+    wire [31:0] addrext;       // 扩展后的地址
+    wire [31:0] pcnew;         // 新的PC值
+    wire [31:0] pcplus4;       // PC+4
+    wire [31:0] jumpaddr;      // 跳转地址
+    wire [27:0] jumpleft;      // 左移后的跳转地址
+    wire [31:0] branchleft;    // 左移后的分支地址
+    wire [31:0] objectaddr;    // 目标地址
+    wire pcsrc;                // PC源选择
+    wire zero;                 // 零标志
+
+    // 寄存器模块
+    regfile regfile(
+        .clk(clka),
+        .rst(rst),
+        .we3(regwrite),        // 修正：使用regwrite而不是memtoreg
+        .ra1(instr[25:21]),
+        .ra2(instr[20:16]),    // 修正：ra2应该是instr[20:16]而不是instr[15:11]
+        .wa3((regdst==1) ? instr[15:11] : instr[20:16]),
+        .wd3((memtoreg==1) ? readdata : aluout),
+        .rd1(readdata1),
+        .rd2(readdata2)
+    );
+    
+    // 将readdata2赋给writedata，用于存储到内存
+    assign writedata = readdata2;
+
+    // 符号扩展模块
+    signext sext(
+        .addr(instr[15:0]),
+        .y(addrext)
+    );
+
+    // ALU模块
+    alu alu1(
+        .num1(readdata1),
+        .num2((alusrc==1) ? addrext : readdata2),
+        .op(alucontrol),
+        .result(aluout),
+        .zero(zero)
+    );
+
+    // 分支条件 = branch & zero
+    assign pcsrc = branch & zero;
+
+    // PC模块
+    pc pc1(
+        .clk(clka),
+        .rst(rst),
+        .pcnew(pcnew),
+        .pc(pc)
+    );
+
+    // 加法器1：计算PC+4
+    adder ad1(
+        .a(pc),
+        .b(32'd4),
+        .y(pcplus4)
+    );
+
+    // 加法器2：计算分支目标地址
+    adder ad2(
+        .a(pcplus4),
+        .b(branchleft),
+        .y(objectaddr)
+    );
+
+    // 26位左移2位模块
+    bits26sl2 s1(
+        .addr(instr[25:0]),
+        .y(jumpleft)
+    );
+
+    // 计算跳转地址
+    assign jumpaddr = {pcplus4[31:28], jumpleft};
+
+    // 左移2位模块
+    sl2 s2(
+        .addr(addrext),
+        .y(branchleft)
+    );
+
+    // 计算新的PC值
+    // 如果jump=1，使用jumpaddr
+    // 如果jump=0但pcsrc=1(branch & zero=1)，使用objectaddr
+    // 否则使用pcplus4
+    assign pcnew = (jump==1'b1) ? jumpaddr : 
+                  (pcsrc==1'b1) ? objectaddr : pcplus4;
+
+endmodule
 \end{lstlisting}

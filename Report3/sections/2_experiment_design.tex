@@ -1,18 +1,55 @@
 \section{实验设计}
-\textcolor{red}{这一节，主要描述各个模块的功能、接口、逻辑控制方法（状态机控制方法）等。(红字为内容说明，请删除)}
-\subsection{数据通路}\label{sub:datapath}
-\subsubsection{功能描述}
-\textcolor{red}{简单描述实现的功能即可，一句话亦可(红字为内容说明，请删除)}
-\subsubsection{接口定义}
-\textcolor{red}{接口定义请使用表格，需要包括\textbf{接口信号名、方向、宽度、含义}(红字为内容说明，请删除)}
 
-\begin{table}[htp]
-\caption{接口定义模版}\label{tab:signaldef}
+\subsection{Controller}\label{sub:controller}
+\subsubsection{功能描述}
+Controller 模块负责将取来的指令中的 OP 和 FUNC 字段翻译成各类控制信号，驱
+动下游的数据通路（Datapath）完成正确的指令执行。它由Maindec和ALUdec两级译码器组成
+通过这两级译码，Controller 将复杂的指令语义分解为一组简单的布尔控制信号，确保数据通路各单元在每个时钟周期内协同工作。
+\subsubsection{接口定义}
+\begin{table}[H]
+\caption{Controller接口}\label{tab:Controller接口}
 \begin{center}
 	\begin{tabular}{|l|l|l|p{6cm}|}
 	\hline
 	\textbf{信号名} & \textbf{方向} & \textbf{位宽} & \textbf{功能描述}\\ \hline \hline
-	valid			& Output& 1-bit & \\ 
+	op			& Input& 6-bit & 指令的opcode字段\\
+	func&Input&6-bit&R-type指令的function字段\\
+	jump&Output&1-bit&跳转控制信号，高电平表示执行J-type\\
+	branch&Output&1-bit&分支判断使能，与zero相与成PCsrc控制信号\\
+	alusrc&Output&1-bit&AlU第二操作数来源：0=寄存器，1=立即数\\
+	alucontrol&Output&3-bit&传输给ALU的具体运算控制码\\
+	memwrite&Output&1-bit&数据存储写使能，高电平写\\
+	memtoreg&Output&1-bit&写回寄存器的数据来源：0=ALU，1=Mem\\
+	regdst&Output&1-bit&写回寄存器来源：0=rt，1=rd\\
+	regwrite&Output&1-bit&寄存器写使能，高电平写\\
+	\hline
+	\end{tabular}
+\end{center}
+\end{table}
+
+\subsection{数据通路}\label{sub:datapath}
+\subsubsection{功能描述}
+Datapath 模块实现指令的取指、译码、执行、访存与回写五大阶段的数据流与运算逻辑。
+\subsubsection{接口定义}
+\begin{table}[H]
+\caption{datapath接口}\label{tab:datapath接口}
+\begin{center}
+	\begin{tabular}{|l|l|l|p{6cm}|}
+	\hline
+	\textbf{信号名} & \textbf{方向} & \textbf{位宽} & \textbf{功能描述}\\ \hline \hline
+	clka			& Input& 1-bit & 时钟信号，所有时序逻辑同步上升沿\\
+	rst&Input&1-bit&异步复位，高电平清零PC和寄存器\\
+	jump&Input&1-bit&来自controller的跳转控制\\
+	branch&Input&1-bit&来自controller的分支控制\\
+	alusrc&Input&1-bit&来自controller的ALU源选择\\
+	memtoreg&Input&1-bit&来自controller的写回数据源选择\\
+	regwrite&Input&1-bit&来自controller的寄存器写使能\\
+	alucontrol&Input&1-bit&来自controller 的 ALU 运算控制信号\\
+	instr&Input&32-bit&取指存储器输出的32位指令\\
+	readdata&Input&32-bit&数据存储器读出的32位数据\\
+	aluout&Output&32-bit&ALU运算结果\\
+	pc&Output&32-bit&当前程序计数器值\\
+	writedata&Output&32-bit&要写入数据存储器的数据总线\\
 	\hline
 	\end{tabular}
 \end{center}
