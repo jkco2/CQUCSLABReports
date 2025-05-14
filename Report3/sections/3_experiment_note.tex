@@ -3,11 +3,11 @@
 \textbf{问题描述：}该实验的ALU模块和之前实验的ALU模块在ALUcontorl信号的控制上存在巨大差别，不能直接复用，需要修改。
 
 \textbf{解决方案：}修改各控制码对应的运算操作。
-\subsection{问题1:jump接口失效}
+\subsection{问题2:jump接口失效}
 \textbf{问题描述：}生成RTL图发现controller的jump接口显示为n/c，即未连接，经检查为mips层忘记将jump放进controller的jump接口实例化
 
 \textbf{解决方案：}实例化后成功连接。
-\subsection{问题1:仿真频繁出现X}
+\subsection{问题3:仿真频繁出现X}
 \textbf{问题描述：}PC模块没有设置复位操作，PC信号自身为不定态，地址错误故指令和相关操作都未能正确执行。
 
 \textbf{解决方案：}给PC模块设置复位操作。

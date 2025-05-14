@@ -1,17 +1,69 @@
 \section{实验设计}
-\subsection{冒险处理模块}\label{sub:hazard}
+\subsection{数据通路模块}\label{sub:datapath}
 \subsubsection{功能描述}
-\textcolor{red}{简单描述实现的功能即可，一句话亦可(红字为内容说明，请删除)}
+Datapath 模块实现指令的取指、译码、执行、访存与回写五大阶段的数据流与运算逻辑。
 \subsubsection{接口定义}
-\textcolor{red}{接口定义请使用表格，需要包括\textbf{接口信号名、方向、宽度、含义}(红字为内容说明，请删除)}
-
-\begin{table}[htp]
-\caption{接口定义模版}\label{tab:signaldef}
+\begin{table}[H]
+\caption{Datapath接口}\label{tab:dp}
 \begin{center}
 	\begin{tabular}{|l|l|l|p{6cm}|}
 	\hline
 	\textbf{信号名} & \textbf{方向} & \textbf{位宽} & \textbf{功能描述}\\ \hline \hline
-	valid			& Output& 1-bit & \\ 
+	clk & input & 1 & 时钟信号 \\
+reset & input & 1 & 同步复位信号 \\
+instr & input & 32 & 当前取出的指令，来自指令存储器 \\
+pc & output & 32 & 当前PC地址，供指令存储器使用 \\
+memtoregD & input & 1 & ID阶段：写回阶段是否从内存读取 \\
+memwriteD & input & 1 & ID阶段：是否写入内存 \\
+branchD & input & 1 & ID阶段：是否为条件分支指令 \\
+alusrcD & input & 1 & ID阶段：ALU第二个操作数来源选择（寄存器或立即数） \\
+regdstD & input & 1 & ID阶段：写寄存器地址选择（rd或rt） \\
+regwriteD & input & 1 & ID阶段：是否写寄存器 \\
+jumpD & input & 1 & ID阶段：是否为跳转指令 \\
+alucontrolD & input & 3 & ID阶段：ALU操作控制信号 \\
+EqualD & output & 1 & ID阶段：比较rs与rt是否相等（用于分支判断） \\
+StallD & output & 1 & ID阶段：是否暂停流水线（冒险检测结果） \\
+pcsrcD & output & 1 & IF阶段：是否进行条件跳转（EqualD \& branchD） \\
+op & output & 6 & ID阶段：指令操作码字段instr[31:26] \\
+funct & output & 6 & ID阶段：R型指令功能码字段instr[5:0] \\
+readdata & input & 32 & MEM阶段：从数据存储器读取的数据 \\
+aluout\_M & output & 32 & MEM阶段：ALU计算结果，写数据存储器地址或写回用 \\
+Writedata\_M & output & 32 & MEM阶段：写入数据存储器的数据 \\
+memwriteM & output & 1 & MEM阶段：是否进行数据存储器写操作 \\
+	\hline
+	\end{tabular}
+\end{center}
+\end{table}
+\subsection{冒险处理模块}\label{sub:hazard}
+\subsubsection{功能描述}
+Hazard模块用于检测和处理MIPS五级流水线中的数据冒险与控制冒险，通过转发（Forwarding）与暂停（Stall）机制保证数据正确性和指令正确执行。
+\subsubsection{接口定义}
+\begin{table}[H]
+\caption{Hazard接口定义}\label{tab:signaldef}
+\begin{center}
+	\begin{tabular}{|l|l|l|p{6cm}|}
+	\hline
+	\textbf{信号名} & \textbf{方向} & \textbf{位宽} & \textbf{功能描述}\\ \hline \hline
+writereg\_e & input & 5 & EX阶段要写回的寄存器号（用于检测EX阶段的RAW冒险） \\
+writereg\_m & input & 5 & MEM阶段要写回的寄存器号（用于前推判断） \\
+writereg\_w & input & 5 & WB阶段要写回的寄存器号（用于前推判断） \\
+regwriteE & input & 1 & EX阶段写回使能信号 \\
+regwriteM & input & 1 & MEM阶段写回使能信号 \\
+regwriteW & input & 1 & WB阶段写回使能信号 \\
+branchD & input & 1 & ID阶段当前指令是否为分支指令 \\
+rsE & input & 5 & EX阶段的源寄存器rs \\
+rtE & input & 5 & EX阶段的源寄存器rt \\
+rsD & input & 5 & ID阶段的源寄存器rs \\
+rtD & input & 5 & ID阶段的源寄存器rt \\
+memtoregE & input & 1 & EX阶段指令是否从内存读取数据（lw） \\
+memtoregM & input & 1 & MEM阶段指令是否从内存读取数据（lw） \\
+forwardAE & output & 2 & EX阶段ALU第一个操作数的前推控制信号 \\
+forwardBE & output & 2 & EX阶段ALU第二个操作数的前推控制信号 \\
+forwardAD & output & 1 & ID阶段用于分支判断的rs是否需要前推 \\
+forwardBD & output & 1 & ID阶段用于分支判断的rt是否需要前推 \\
+StallF & output & 1 & 是否暂停IF阶段（冒险检测结果） \\
+StallD & output & 1 & 是否暂停ID阶段（冒险检测结果） \\
+FlushE & output & 1 & 是否清空EX阶段寄存器（防止错误执行） \\
 	\hline
 	\end{tabular}
 \end{center}

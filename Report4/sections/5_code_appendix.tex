@@ -1,18 +1,331 @@
 \appendix
 \section{Datapath代码}
 
-\begin{lstlisting}[language=Verilog]
+\begin{lstlisting}[language=Verilog,frame=single]
+`timescale 1ns / 1ps
 
+module datapath(
+input clk,reset,
+
+//Fetch
+
+input [31:0]instr,
+output [31:0] pc,
+
+//Decode
+input memtoregD,memwriteD,branchD,alusrcD,regdstD,regwriteD,jumpD,
+input [2:0] alucontrolD,
+output wire EqualD,StallD,pcsrcD,
+output wire [5:0] op,funct,
+//Execute
+// No IO signals
+
+//Memory
+input [31:0]readdata,
+//output wire zero,
+output [31:0] aluout_M, Writedata_M,
+output wire memwriteM
+//Writeback
+// No IO signals
+);
+wire [31:0]instrD;
+wire [31:0] extended_dataD,shifted_data;
+wire [31:0] pc_plus4,PCjumpD;
+wire [31:0] RD1,RD2;
+wire [31:0] pc_next; //pc+4或�?�branch
+wire [31:0] pc__next; //pc_next或�?�jump
+
+//assign writedata=RD2;
+
+//提前声明的变�?
+//Hazard
+wire [1:0] forwardAE,forwardBE;
+wire StallF,FlushE;
+
+// Fetch -> Decode
+wire [31:0] PCbranchD, pc_plus4D;
+wire [4:0] RsD,RtD,RdD;
+wire memtoregD,memwriteD,branchD,alusrcD,regdstD,regwriteD,jumpD;
+wire [2:0] alucontrolD;
+wire [31:0] Forward_RD1,Forward_RD2;
+wire forwardAD,forwardBD;
+wire EqualD;
+
+
+
+// Decode -> Excute
+wire [31:0] RD1_E,RD2_E;
+wire [4:0] RsE, RtE, RdE, WriteregE;
+wire [31:0] SrcAE, SrcBE, SrcBE_temp;
+wire [31:0] extended_dataE;
+wire [31:0] aluoutE;
+//wire [31:0] pc_plus4_E;
+
+wire memtoregE,memwriteE,alusrcE,regdstE,regwriteE;
+wire [2:0] alucontrolE;
+// Excute -> Memory 
+wire [31:0] aluout_M;
+//wire [31:0] PCbranch_M;
+wire [4:0]  WriteregM;
+//wire zero_M;
+
+wire memtoregM,memwriteM,regwriteM;
+
+
+wire [31:0] result_W;
+// Memory -> Writeback
+wire regwriteW;
+wire [4:0] WriteregW;
+wire [31:0] readdata_W;
+wire [31:0] aluout_W;
+wire  memtoregW;
+//Fetch stage #1
+/*
+PC+取指�?
+*/
+assign PCjumpD={pc_plus4D[31:28],instrD[25:0],2'b00};
+
+pc PC(         //修改
+.clk(clk),   //out:pc
+.rst(reset),    //input:pc__next
+.pc(pc),
+.ena(~StallF),
+.pc_next(pc__next)
+);
+
+mux21 #(32)pc_mux(.data_in0(pc_plus4),.data_in1(PCbranchD),.sel(pcsrcD),.data_out(pc_next));
+mux21 #(32)pc2_mux(.data_in0(pc_next),.data_in1(PCjumpD),.sel(jumpD),.data_out(pc__next));
+adder pc_plus_4(.a(pc),.b(32'h4),.y(pc_plus4));
+
+
+// Fetch -> Decode
+////////////////////////////////////////////////////////////
+//flopr #(32)fd_inst (.clk(clk), .rst(reset), .din(instr), .dout(instrD));
+flopenrc #(32)fd_instr (.clk(clk), .rst(reset), .clear(1'b0), .en(~StallD), .din(instr), .dout(instrD));
+flopenrc #(32)fd_pc_plus4 (.clk(clk), .rst(reset), .clear(1'b0), .en(~StallD), .din(pc_plus4), .dout(pc_plus4D));
+////////////////////////////////////////////////////////////
+
+
+//Decode stage #2
+
+//signals
+assign op=instrD[31:26];
+assign funct=instrD[5:0];
+//assign {memtoregD,memwriteD,branchD,alusrcD,regdstD,regwriteD,jumpD,alucontrolD}={memtoreg,memwrite,branch,alusrc,regdst,regwrite,jump,alucontrol};
+assign {RsD,RtD,RdD}={instrD[25:21],instrD[20:16],instrD[15:11]};
+regfile R(
+.clk(clk),
+.we3(regwriteW),
+.ra1(instrD[25:21]),.ra2(instrD[20:16]),.wa3(WriteregW),
+.wd3(result_W),
+.rd1(RD1),.rd2(RD2)
+);
+
+sign_extension SE(
+.data_in(instrD[15:0]),
+.data_out(extended_dataD)
+);
+
+shift_2 #(32)sh2 (
+.data_in(extended_dataD),
+.data_out(shifted_data)
+);
+adder A(.a(shifted_data),.b(pc_plus4D),.y(PCbranchD));
+
+mux21 #(32)forward1_mux(
+.data_in0(RD1),
+.data_in1(aluout_M),
+.sel(forwardAD),
+.data_out(Forward_RD1)
+);
+
+mux21 #(32)forward2_mux(
+.data_in0(RD2),
+.data_in1(aluout_M),
+.sel(forwardBD),
+.data_out(Forward_RD2)
+);
+
+assign EqualD = (Forward_RD1==Forward_RD2) ? 1'b1 : 1'b0;
+assign pcsrcD = (EqualD & branchD);
+
+// Decode -> Execute
+////////////////////////////////////////////////////////////
+floprc #(1)de_memtoreg (.clk(clk), .rst(reset), .clear(FlushE), .din(memtoregD), .dout(memtoregE));
+floprc #(1)de_memwrite (.clk(clk), .rst(reset), .clear(FlushE), .din(memwriteD), .dout(memwriteE));
+floprc #(1)de_alusrc (.clk(clk), .rst(reset), .clear(FlushE), .din(alusrcD), .dout(alusrcE));
+floprc #(1)de_reg_dst (.clk(clk), .rst(reset), .clear(FlushE), .din(regdstD), .dout(regdstE));
+floprc #(1)de_reg_write (.clk(clk), .rst(reset), .clear(FlushE), .din(regwriteD), .dout(regwriteE));
+floprc #(3)de_alucontrol (.clk(clk), .rst(reset), .clear(FlushE), .din(alucontrolD), .dout(alucontrolE));
+
+floprc #(5)de_inst3 (.clk(clk), .rst(reset), .clear(FlushE), .din(RsD), .dout(RsE));
+floprc #(5)de_inst1 (.clk(clk), .rst(reset), .clear(FlushE), .din(RtD), .dout(RtE));
+floprc #(5)de_inst2 (.clk(clk), .rst(reset), .clear(FlushE), .din(RdD), .dout(RdE));
+floprc #(32)de_signDate (.clk(clk), .rst(reset), .clear(FlushE), .din(extended_dataD), .dout(extended_dataE));
+floprc #(32)de_reg_RD1 (.clk(clk), .rst(reset), .clear(FlushE), .din(RD1), .dout(RD1_E));
+floprc #(32)de_reg_RD2 (.clk(clk), .rst(reset), .clear(FlushE), .din(RD2), .dout(RD2_E));
+////////////////////////////////////////////////////////////
+//Execute stage #3
+mux31 #(32) alu_srcA(.a(RD1_E),.b(result_W),.c(aluout_M),.sel(forwardAE),.out(SrcAE));
+mux31 #(32) alu_srcB(.a(RD2_E),.b(result_W),.c(aluout_M),.sel(forwardBE),.out(SrcBE_temp));
+mux21 #(5)reg_mux(
+.data_in0(RtE),
+.data_in1(RdE),
+.sel(regdstE),
+.data_out(WriteregE)
+);
+mux21 #(32)alu_mux(
+.data_in0(SrcBE_temp),
+.data_in1(extended_dataE),
+.sel(alusrcE),
+.data_out(SrcBE)
+);
+//Data来自extended_data或�?�shifted_data
+ALU alu(.SrcA(SrcAE),.SrcB(SrcBE),.opcode(alucontrolE),.aluresult(aluoutE));
+
+
+// Excute -> Memory 
+////////////////////////////////////////////////////////////
+floprc #(1)em_memtoreg (.clk(clk), .rst(reset), .clear(1'b0), .din(memtoregE), .dout(memtoregM));
+floprc #(1)em_memwrite (.clk(clk), .rst(reset), .clear(1'b0), .din(memwriteE), .dout(memwriteM));
+floprc #(1)em_regwrite (.clk(clk), .rst(reset), .clear(1'b0), .din(regwriteE), .dout(regwriteM));
+//floprc #(1)em_zero (.clk(clk), .rst(reset), .clear(1'b0), .din(zero), .dout(zero_M));
+
+floprc #(32)em_aluout (.clk(clk), .rst(reset), .clear(1'b0), .din(aluoutE), .dout(aluout_M));
+floprc #(32)em_writedata (.clk(clk), .rst(reset), .clear(1'b0), .din(SrcBE_temp), .dout(Writedata_M));
+floprc #(5)em_writereg (.clk(clk), .rst(reset), .clear(1'b0), .din(WriteregE), .dout(WriteregM));
+//floprc #(32)em_PCbranch (.clk(clk), .rst(reset), .clear(1'b0), .din(PCbranch), .dout(PCbranch_M));
+////////////////////////////////////////////////////////////
+
+
+
+
+//Memory stage #4
+
+
+// Memory -> Writeback
+////////////////////////////////////////////////////////////
+flopr #(1)mw_regwrite (.clk(clk), .rst(reset), .din(regwriteM), .dout(regwriteW));
+flopr #(1)mw_memtoreg (.clk(clk), .rst(reset), .din(memtoregM), .dout(memtoregW));
+
+flopr #(5)mw_write_reg (.clk(clk), .rst(reset), .din(WriteregM), .dout(WriteregW));
+flopr #(32)mw_readdata (.clk(clk), .rst(reset), .din(readdata), .dout(readdata_W));
+flopr #(32)mw_aluout (.clk(clk), .rst(reset), .din(aluout_M), .dout(aluout_W));
+////////////////////////////////////////////////////////////
+
+//Writeback stage #5
+
+mux21 #(32)mem_mux(
+.data_in0(aluout_W),
+.data_in1(readdata_W),
+.sel(memtoregW),
+.data_out(result_W)
+);
+
+Hazard h(.regwriteE(regwriteE), .regwriteM(regwriteM), .regwriteW(regwriteW), .writereg_e(WriteregE), .writereg_w(WriteregW), .writereg_m(WriteregM), 
+.memtoregE(memtoregE), .memtoregM(memtoregM),
+.rsE(RsE), .rtE(RtE), .rsD(RsD), .rtD(RtD),
+.forwardAE(forwardAE), .forwardBE(forwardBE), .StallF(StallF), .StallD(StallD), .FlushE(FlushE),
+.branchD(branchD), .forwardAD(forwardAD), .forwardBD(forwardBD)
+);
+
+
+endmodule
 \end{lstlisting}
 
 \section{Hazard代码}
-\textcolor{red}{其他模块不需要填写(红字为内容说明，请删除)}
-\begin{lstlisting}[language=Verilog]
+\begin{lstlisting}[language=Verilog,frame=single]
+`timescale 1ns / 1ps
+
+module Hazard(
+    input [4:0] writereg_e, writereg_w, writereg_m,
+    input regwriteE, regwriteM, regwriteW, branchD, 
+    input [4:0] rsE, rtE, rsD, rtD,
+    input memtoregE, memtoregM,
+    output reg [1:0] forwardAE,forwardBE,
+    output wire forwardAD, forwardBD,
+    output wire StallF, StallD, FlushE
+    );
+    //Forwarding
+    wire branchstall, lwstall;
+    always @(*) begin
+        forwardAE = 2'b00;
+        forwardBE = 2'b00;
+        if (rsE != 0) begin 
+            if ((rsE == writereg_m) & regwriteM) begin
+                forwardAE = 2'b10;
+            end //ALU数据前推
+            else if ((rsE == writereg_w) & regwriteW) begin
+                forwardAE = 2'b01;
+            end //寄存�?
+            else begin
+                forwardAE = 2'b00;
+            end
+        end
+
+        if (rtE != 0) begin
+            if ((rtE == writereg_m) & regwriteM) begin
+                forwardBE = 2'b10;
+            end
+            else if ((rtE == writereg_w) & regwriteW) begin
+                forwardBE = 2'b01;
+            end
+            else begin
+                forwardBE = 2'b00;
+            end
+        end
+    end
+    //Stall
+    assign lwstall = (rsD == rtE | rtD == rtE) & memtoregE;
+
+    //branch prediction
+
+    assign forwardAD = (rsD != 0) & (rsD == writereg_m) & regwriteM;
+    assign forwardBD = (rtD != 0) & (rtD == writereg_m) & regwriteM;
+    
+    
+    assign branchstall = branchD & ( regwriteE & (writereg_e == rsD | writereg_e == rtD)
+                       | memtoregM & ( writereg_m == rsD | writereg_m == rtD )); 
+    assign StallD = branchstall | lwstall;
+    assign StallF = branchstall | lwstall;
+    assign FlushE = branchstall | lwstall;    
+endmodule
 
 \end{lstlisting}
 
 \section{Controller代码}
-\textcolor{red}{其他模块不需要填写(红字为内容说明，请删除)}
-\begin{lstlisting}[language=Verilog]
+\begin{lstlisting}[language=Verilog,frame=single]
+`timescale 1ns / 1ps
 
+module controller(
+input [5:0] Inst_part_31_26,
+input [5:0] Inst_part_5_0,
+input zero,
+output wire jump,alusrc,memwrite,memtoreg,regwrite,regdst,branch,
+output wire [2:0]Alcontrol
+);
+
+
+wire [1:0]Alop;
+
+maindec MD(
+.Inst_part_31_26(Inst_part_31_26),
+.jump(jump),
+.zero(zero),
+.branch(branch),
+.alusrc(alusrc),
+.memwrite(memwrite),
+.memtoreg(memtoreg),
+.regwrite(regwrite),
+.regdst(regdst),
+.Alop(Alop)
+);
+
+aludec AL(
+.Inst_part_5_0(Inst_part_5_0),
+.Alop(Alop),
+.Alcontrol(Alcontrol)
+);
+
+endmodule
 \end{lstlisting}
