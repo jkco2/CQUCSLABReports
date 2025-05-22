@@ -4,11 +4,11 @@
 但是会影响到其他运算，导致不定态在运算中不断传递。
 
 \textbf{解决方案：}将controller中的控制信号为x改成0。
-\subsection{问题2:branch跳转错误}
-\textbf{问题描述：}
+\subsection{问题2:ALU无法读到数据}
+\textbf{问题描述：}$or$ 指令无法读到 $addi \$2, \$0, 5$ 的数据，导致 $\$4$ 的值错误。因为regfile中 \$2的数据输入与读取在同一上升沿，故无法取到正确的数。
 
-\textbf{解决方案：}
-\subsection{问题3:jump跳转错误}
-\textbf{问题描述：}
+\textbf{解决方案：}将regfile的 $posedge clk$ 改为 $negedge clk $，使得数据提前半周期读入regfile。
+\subsection{问题3:datamemory最后无法正确输出已经存入的值}
+\textbf{问题描述：}通过仿真发现datamemory的输出延后实际信号memwriteM三周期。
 
-\textbf{解决方案：}
+\textbf{解决方案：}通过排查发现接口接错导致memwriteM没有正确输出，而是将memwriteE当作memwriteM输出。于是将输出接口修正。
