@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.3.14)  23 MAY 2025 02:19
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.3.14)  23 MAY 2025 13:55
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1119,20 +1119,30 @@ Underfull \hbox (badness 4266) in paragraph at lines 41--41
 
 
 
-[4]) (./sections/3_experiment_note.tex) (./sections/4_experiment_result.tex
+[4]) (./sections/3_experiment_note.tex
+
+[5]) (./sections/4_experiment_result.tex
+File: image/wt_miss.png Graphic file (type bmp)
+<image/wt_miss.png>
+File: image/wb_miss.png Graphic file (type bmp)
+<image/wb_miss.png>
+
+
+[6]
 File: image/wt.png Graphic file (type bmp)
 <image/wt.png>
 File: image/wb.png Graphic file (type bmp)
 <image/wb.png>
+
+
+[7]
 File: image/pass.png Graphic file (type bmp)
 <image/pass.png>
+)
 
+[8]
 
-[5])
-
-[6]
-
-[7] (./sections/5_code_appendix.tex (c:/texlive/2025/texmf-dist/tex/latex/listings/lstlang1.sty
+[9] (./sections/5_code_appendix.tex (c:/texlive/2025/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2024/09/23 1.10c listings language file
 ) (c:/texlive/2025/texmf-dist/tex/latex/listings/lstlang2.sty
 File: lstlang2.sty 2024/09/23 1.10c listings language file
@@ -1140,29 +1150,29 @@ File: lstlang2.sty 2024/09/23 1.10c listings language file
 File: lstlang3.sty 2024/09/23 1.10c listings language file
 )
 
-[8]
-
-[9]
-
 [10]
 
-[11])
+[11]
 
-[12] (./experiment_report.aux)
+[12]
+
+[13])
+
+[14] (./experiment_report.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2020/03/25>
  ***********
 Package rerunfilecheck Info: File `experiment_report.out' has not changed.
-(rerunfilecheck)             Checksum: 5412F598DF7DD319D69149C2F47B8004;1020.
+(rerunfilecheck)             Checksum: BA5DFCD8CC15B25D36C9A6D4E7131650;1573.
  ) 
 Here is how much of TeX's memory you used:
- 33338 strings out of 473832
- 668316 string characters out of 5733158
- 1516333 words of memory out of 5000000
- 55787 multiletter control sequences out of 15000+600000
+ 33382 strings out of 473832
+ 670097 string characters out of 5733158
+ 1540334 words of memory out of 5000000
+ 55829 multiletter control sequences out of 15000+600000
  615573 words of font info for 111 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  108i,12n,136p,550b,2198s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on experiment_report.pdf (12 pages).
+Output written on experiment_report.pdf (14 pages).

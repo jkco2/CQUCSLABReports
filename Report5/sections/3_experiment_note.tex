@@ -1,6 +1,15 @@
 \section{实验过程记录}
-\subsection{问题1:仿真多数据出现不定态X}
-\textbf{问题描述：}refile的内部信号未初始化0，加之controller中的控制信号在某些情况规定为x，虽然逻辑上在某些情况这些控制信号是0是1都是可以的，
-但是会影响到其他运算，导致不定态在运算中不断传递。
+\subsection{问题1:状态机设计失误}
+\textbf{问题描述：}误设置WM状态在来自内存的数据未到时进入IDLE状态，导致仿真到达某一指令后锁死。
 
-\textbf{解决方案：}将controller中的控制信号为x改成0。
+\textbf{解决方案：}WM状态在来自内存的数据未到时应保持在WM状态。
+\subsection{问题2:需要flag判断read\_finish升高时完成的是读缺失的读取内存事务还是写缺失的读取内存事务}
+\textbf{问题描述：}虽然指导书上说Cache在处理读取内存或写内存的时候从该CPU输入的变量cpu\_data\_req，cpu\_data\_wr，cpu\_data\_addr，
+cpu\_data\_wdata，cpu\_data\_size是不变的，但是在某些CPU这些变量都是有可能改变的，为了严谨不
+能靠write或read判断是写操作还是读操作。
+
+\textbf{解决方案：}这里用一个flag信号——write\_miss\_pending进行读写操作的判断进而调控写入Cache的内容。
+\subsection{问题3:写缺失后内存的写回}
+\textbf{问题描述：}如果当前是写缺失情况，write\_cache\_data使用cache\_block，当有字节更新时会混入原Cache块的内容，因此写掩码生成需要内存中的当前数据而不是Cache中的数据。
+
+\textbf{解决方案：}变更更新字节的对象，将cache\_block[index]改为cache\_data\_rdata，

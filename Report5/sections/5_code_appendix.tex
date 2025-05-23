@@ -114,7 +114,7 @@ module d_cache (
     assign write_finish = write_req & cache_data_data_ok;
 
     //output to mips core
-    assign cpu_data_rdata   = hit ? c_block : cache_data_rdata;//直至读命中把CacheLine中的数据发送
+    assign cpu_data_rdata   = hit ? c_block : cache_data_rdata;//hit将Cache中数据发送给CPU，miss则将主存返回的数据发送给CPU
     assign cpu_data_addr_ok = (cpu_data_req & hit) | (cache_data_req & cache_data_addr_ok);
     assign cpu_data_data_ok = (cpu_data_req & hit) | (read_finish);
 
@@ -134,19 +134,7 @@ module d_cache (
         index_save <= rst ? 0 :
                       cpu_data_req ? index : index_save;
     end
-
-    //写掩码生成
-    wire [31:0] write_cache_data;
-    wire [3:0] write_mask;
-
-    assign write_mask = cpu_data_size==2'b00 ?
-                            (cpu_data_addr[1] ? (cpu_data_addr[0] ? 4'b1000 : 4'b0100):
-                                                (cpu_data_addr[0] ? 4'b0010 : 4'b0001)) :
-                            (cpu_data_size==2'b01 ? (cpu_data_addr[1] ? 4'b1100 : 4'b0011) : 4'b1111);
-
-    assign write_cache_data = cache_block[index] & ~{{8{write_mask[3]}}, {8{write_mask[2]}}, {8{write_mask[1]}}, {8{write_mask[0]}}} | 
-                              cpu_data_wdata & {{8{write_mask[3]}}, {8{write_mask[2]}}, {8{write_mask[1]}}, {8{write_mask[0]}}};
-
+    
     // 缺失flag，1说明写缺失未处理，缺失写回后进入RM状态进行写分配，如何判断是写缺失还是读缺失
     reg write_miss_pending;
     always @(posedge clk) begin
@@ -160,6 +148,26 @@ module d_cache (
             write_miss_pending <= 1'b0;
         end
     end
+    
+    //写掩码生成
+    wire [31:0] write_cache_data;
+    reg [3:0] write_mask;
+    
+    always @(posedge clk) begin
+        if(rst)begin
+            write_mask <= 0;
+        end
+        else if(cpu_data_req & write & miss) begin
+            write_mask <= cpu_data_size==2'b00 ?
+                            (cpu_data_addr[1] ? (cpu_data_addr[0] ? 4'b1000 : 4'b0100):
+                                                (cpu_data_addr[0] ? 4'b0010 : 4'b0001)) :
+                            (cpu_data_size==2'b01 ? (cpu_data_addr[1] ? 4'b1100 : 4'b0011) : 4'b1111);
+        end
+    end 
+
+    assign write_cache_data = cache_data_rdata & ~{{8{write_mask[3]}}, {8{write_mask[2]}}, {8{write_mask[1]}}, {8{write_mask[0]}}} | 
+                              cpu_data_wdata & {{8{write_mask[3]}}, {8{write_mask[2]}}, {8{write_mask[1]}}, {8{write_mask[0]}}};
+
     //写入Cache
     integer t;
     always @(posedge clk) begin
@@ -173,7 +181,7 @@ module d_cache (
             if(read_finish) begin//写缺失或读缺失
                 cache_valid[index_save] <= 1'b1;
                 cache_tag[index_save] <= tag_save;
-                cache_block[index_save] <= write_miss_pending ? write_cache_data : cache_data_rdata;
+                cache_block[index_save] <= write_miss_pending ? write_cache_data : cache_data_rdata;//写缺失用CPU要写的数据覆写内存读取出的数据并写入到Cache中，读缺失则直接用内存读取出的数据写入到Cache中
                 cache_dirty[index_save] <= write_miss_pending ? 1'b1 : 1'b0;
             end
             else if(cpu_data_req & write & hit) begin

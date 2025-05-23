@@ -1,24 +1,42 @@
 \section{实验结果及分析}
 \begin{figure}[H]
   \centering
-
-  \begin{subfigure}[b]{0.6\textwidth}
+  \begin{subfigure}[b]{0.8\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{image/wt_miss.png}
+    \caption{写直达的写缺失}
+    \label{fig:wtwm}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.8\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{image/wb_miss.png}
+    \caption{写回-写分配的写缺失}
+    \label{fig:wbwm}
+  \end{subfigure}
+  \caption{写直达和写回-写分配的写缺失对比}
+  \label{fig:miss}
+\end{figure}
+写回的写内存请求cache\_data\_wr在写字且原cacheline不为脏页时由于是写在cache中所以不为1。
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.8\textwidth}
     \centering
     \includegraphics[width=\textwidth]{image/wt.png}
     \caption{写直达}
     \label{fig:sub-a}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[b]{0.6\textwidth}
+  \begin{subfigure}[b]{0.8\textwidth}
     \centering
     \includegraphics[width=\textwidth]{image/wb.png}
     \caption{写回-写分配}
     \label{fig:sub-b}
   \end{subfigure}
-
   \caption{写直达和写回-写分配的仿真对比}
   \label{fig:sim_compare}
 \end{figure}
+写回-写分配策略的Cache完成仿真任务比写直达策略的Cache快400微妙左右
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{image/pass.png}
